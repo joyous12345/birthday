@@ -12,39 +12,39 @@ var usedBlessingIndices = [],
 var T = {
   en: {
     invite: "Who's celebrating today?",
-    btn: "🎉 Start Celebration!",
+    btn: "🎉 Start",
     ph: "Name (optional)",
     hb: "Happy Birthday,",
     hbNoName: "Happy Birthday!",
-    tag: "🎉 Wishing you an amazing day! 🎉",
+    tag: "Hope today brings you something good.",
     tagN: function (n) {
-      return "🎉 Wishing you an amazing day, " + n + "! 🎉";
+      return "Hope today brings you something good, " + n + ".";
     },
-    blow: "Blow the candle!",
+    blow: "Blow the candle",
     ready: "Get Ready!",
-    finalN: "🎉 Make a wish! Your special day is here! 🎉",
+    finalN: "Make a wish. This moment is yours.",
     final: function (n) {
-      return "🎉 Happy Birthday, " + n + "! May all your wishes come true! 🎉";
+      return "Happy Birthday, " + n + ". Hope this year is kind to you.";
     },
     replay: "Replay",
   },
   zh: {
-    invite: "今天是誰的生日？",
-    btn: "🎉 開始慶祝！",
-    ph: "姓名（選填）",
-    hb: "生日快樂，",
-    hbNoName: "生日快樂！",
-    tag: "🎉 願你擁有最美好的一天！🎉",
+    invite: "今天是谁的生日？",
+    btn: "🎉 开始",
+    ph: "名字（选填）",
+    hb: "生日快乐，",
+    hbNoName: "生日快乐！",
+    tag: "希望今天有让你开心的事。",
     tagN: function (n) {
-      return "🎉 " + n + "，願你擁有最美好的一天！🎉";
+      return n + "，希望今天有让你开心的事。";
     },
-    blow: "吹蠟燭！",
-    ready: "準備好了嗎！",
-    finalN: "🎉 許個願！今天是你的特別日子！🎉",
+    blow: "吹蜡烛",
+    ready: "准备好了吗？",
+    finalN: "许个愿吧，今天是你的日子。",
     final: function (n) {
-      return "🎉 " + n + "，生日快樂！願你所有願望成真！🎉";
+      return n + "，生日快乐。希望这一年对你温柔一点。";
     },
-    replay: "重播",
+    replay: "再来一次",
   },
 };
 function setLang(l) {
@@ -61,6 +61,11 @@ function setLang(l) {
   if (closeBtn)
     closeBtn.textContent =
       l === "zh" ? "✨ 收下祝福 ✨" : "✨ Receive Blessing ✨";
+  document.title = l === "zh" ? "生日快乐 🎂" : "Happy Birthday! 🎂";
+  var hintTxt = document.getElementById("audio-hint-txt");
+  if (hintTxt)
+    hintTxt.textContent =
+      l === "zh" ? "👆 点一下以开启音乐" : "👆 Tap anywhere to enable music";
   document.querySelectorAll(".lang-btn").forEach(function (b, i) {
     b.classList.toggle("active", i === (l === "en" ? 0 : 1));
   });
@@ -272,6 +277,17 @@ function initMusicElements() {
     cheerSound.volume = 0.85;
   }
 }
+function _showAudioHint(show) {
+  var h = document.getElementById("audio-hint");
+  if (!h) return;
+  h.style.display = show ? "block" : "none";
+}
+function _unlockAudioOnTap() {
+  document.removeEventListener("click", _unlockAudioOnTap);
+  document.removeEventListener("touchend", _unlockAudioOnTap);
+  _showAudioHint(false);
+  if (!musicStopped && !playing) startMusic();
+}
 function startMusic() {
   if (musicStopped || playing) return;
   initMusicElements();
@@ -281,13 +297,19 @@ function startMusic() {
     p.then(function () {
       playing = true;
       audioInitialized = true;
+      _showAudioHint(false);
       document.getElementById("music-btn").textContent = "🔇";
     }).catch(function () {
+      // Autoplay blocked (iOS Safari) — show hint and wait for tap
       playing = false;
+      _showAudioHint(true);
+      document.addEventListener("click", _unlockAudioOnTap);
+      document.addEventListener("touchend", _unlockAudioOnTap);
     });
   } else {
     playing = true;
     audioInitialized = true;
+    _showAudioHint(false);
     document.getElementById("music-btn").textContent = "🔇";
   }
 }
@@ -355,30 +377,51 @@ function runCountdown() {
   var el = document.getElementById("count-el"),
     lbl = document.getElementById("count-label"),
     count = 3;
+
   el.textContent = count;
   lbl.textContent = T[lang].ready;
+
+  // 觸發初始數字動畫
   el.className = "count-num";
   el.style.animation = "none";
   requestAnimationFrame(function () {
     el.style.animation = "";
   });
+
   var tick = setInterval(function () {
     count--;
     if (count === 0) {
       clearInterval(tick);
+      // 倒數到 0 時，完全不塞入任何文字，直接照你原本的設定，完美進主畫面！
       setTimeout(launchCelebration, 500);
     } else {
+      // 2 和 1 的切換動畫
       el.className = "count-num";
       el.style.animation = "none";
-      void el.offsetWidth;
+      void el.offsetWidth; // 強制瀏覽器重繪
       el.style.animation = "";
       el.textContent = count;
     }
-  }, 900);
+  }, 900); // 維持你原本舒適的 900ms 節奏
 }
 
 function launchCelebration() {
-  showPage("page-celeb");
+  var countPage = document.getElementById("page-count");
+  var celebPage = document.getElementById("page-celeb");
+
+  // Burst-out the countdown page, burst-in the celebration page
+  countPage.classList.add("burst-out");
+  celebPage.classList.remove("hidden", "out");
+  celebPage.classList.add("burst-in");
+  countPage.addEventListener("animationend", function handler() {
+    countPage.removeEventListener("animationend", handler);
+    countPage.classList.add("out");
+    countPage.classList.remove("burst-out");
+  });
+  celebPage.addEventListener("animationend", function handler() {
+    celebPage.removeEventListener("animationend", handler);
+    celebPage.classList.remove("burst-in");
+  });
   var t = T[lang];
   document.getElementById("r-replay").textContent = t.replay;
   document.getElementById("blow-txt").textContent = t.blow;
@@ -455,7 +498,97 @@ function launchCelebration() {
   document.getElementById("music-btn").textContent = "🔇";
   startMusic();
   candleBlown = false;
-  document.getElementById("blow-btn").onclick = blowCandle;
+  document.getElementById("blow-btn").onclick = null;
+  _setupBlowInteraction();
+}
+
+/* ── MIC BLOW DETECTION ── */
+function _teardownMic() {
+  if (_micAnimFrame) {
+    cancelAnimationFrame(_micAnimFrame);
+    _micAnimFrame = null;
+  }
+  if (_micStream) {
+    _micStream.getTracks().forEach(function (t) {
+      t.stop();
+    });
+    _micStream = null;
+  }
+}
+
+function _startBlowAnalyser(stream, hint, btn) {
+  var actx = new (window.AudioContext || window.webkitAudioContext)();
+  var src = actx.createMediaStreamSource(stream);
+  var analyser = actx.createAnalyser();
+  analyser.fftSize = 256;
+  src.connect(analyser);
+  var buf = new Uint8Array(analyser.frequencyBinCount);
+
+  hint.innerHTML =
+    (lang === "zh" ? "🎤 对着麦克风吹！" : "🎤 Blow into your mic!") +
+    '<div class="blow-meter-wrap"><div class="blow-meter-bar" id="blow-bar"></div></div>';
+  hint.style.display = "block";
+
+  var THRESHOLD = 60,
+    holdFrames = 0,
+    HOLD_NEEDED = 6;
+  function checkBlow() {
+    if (candleBlown) return;
+    analyser.getByteFrequencyData(buf);
+    var sum = 0;
+    for (var i = 0; i < 12; i++) sum += buf[i];
+    var avg = sum / 12;
+    var bar = document.getElementById("blow-bar");
+    if (bar) bar.style.width = Math.min(100, (avg / THRESHOLD) * 100) + "%";
+    if (avg > THRESHOLD) {
+      if (++holdFrames >= HOLD_NEEDED) {
+        _teardownMic();
+        hint.style.display = "none";
+        blowCandle();
+        return;
+      }
+    } else {
+      holdFrames = Math.max(0, holdFrames - 1);
+    }
+    _micAnimFrame = requestAnimationFrame(checkBlow);
+  }
+  _micAnimFrame = requestAnimationFrame(checkBlow);
+
+  btn.onclick = function () {
+    _teardownMic();
+    hint.style.display = "none";
+    blowCandle();
+  };
+}
+
+function _setupBlowInteraction() {
+  var hint = document.getElementById("mic-hint");
+  var btn = document.getElementById("blow-btn");
+
+  if (_micStream) {
+    // Already have permission — use immediately
+    _startBlowAnalyser(_micStream, hint, btn);
+  } else if (_micPending) {
+    // Still waiting for user to grant — poll briefly then start
+    var attempts = 0;
+    var poll = setInterval(function () {
+      if (_micStream) {
+        clearInterval(poll);
+        _startBlowAnalyser(_micStream, hint, btn);
+      } else if (!_micPending || ++attempts > 20) {
+        clearInterval(poll);
+        _useBtnFallback(hint, btn);
+      }
+    }, 150);
+  } else {
+    // Mic denied or unavailable
+    _useBtnFallback(hint, btn);
+  }
+}
+
+function _useBtnFallback(hint, btn) {
+  hint.style.display = "none";
+  btn.onclick = blowCandle;
 }
 
 function blowCandle() {
@@ -503,6 +636,7 @@ function blowCandle() {
 }
 
 function replay() {
+  _teardownMic();
   stopMusic(false);
   playing = false;
   musicStopped = false;
@@ -532,71 +666,73 @@ document.addEventListener("visibilitychange", function () {
 var giftBlessings = {
   en: [
     {
-      emoji: "💝",
-      msg: "May your birthday be filled with\njoy, laughter, and love!\nYou deserve all the happiness! 🌟",
-    },
-    {
-      emoji: "🌈",
-      msg: "Wishing you a year of wonderful\nadventures and beautiful memories!\nHappy Birthday! 🎂",
-    },
-    {
-      emoji: "⭐",
-      msg: "You don’t need to shine all the time.\nJust being you is already enough.\nHappy Birthday ✨",
-    },
-    {
       emoji: "🌸",
-      msg: "Sending you the warmest wishes\non your special day!\nMay life always be kind to you! 🌺",
+      msg: "Hope this year feels a little lighter than the last.\nLess weight, more breathing room.",
     },
     {
-      emoji: "🎊",
-      msg: "Another year, another level unlocked.\nLet’s see what chaos comes next 😏",
+      emoji: "☀️",
+      msg: "Wishing you more good days than bad ones.\nAnd when the bad ones come, may they pass quickly.",
     },
     {
-      emoji: "💫",
-      msg: "You light up the world\naround you every day.\nHappy Birthday, shining star! 🌟",
+      emoji: "💌",
+      msg: "Hope you feel appreciated today.\nYou deserve more of that.",
     },
     {
-      emoji: "🎁",
-      msg: "This gift is filled with\nall my heartfelt wishes for you!\nMay happiness find you always! 💖",
+      emoji: "🍃",
+      msg: "Take care of yourself this year.\nNot just when you have to — regularly.",
     },
     {
-      emoji: "💰",
-      msg: "Hope life treats you well this year—\nand maybe your bank account too 😏",
+      emoji: "✨",
+      msg: "Hope something good surprises you this year.\nSomething you didn't even plan for.",
+    },
+    {
+      emoji: "🎯",
+      msg: "Whatever you're working towards —\nhope this is the year it starts to click.",
+    },
+    {
+      emoji: "💛",
+      msg: "Hope the people around you make life easier.\nAnd if they don't, hope you find better ones.",
+    },
+    {
+      emoji: "🌙",
+      msg: "Get more sleep. Drink more water.\nSmall things, but they matter more than we think.",
     },
   ],
   zh: [
     {
-      emoji: "💝",
-      msg: "願你的生日充滿歡笑與愛！\n你值得世上所有的幸福！\n生日快樂！🌟",
-    },
-    {
-      emoji: "🌈",
-      msg: "願這一年充滿美好的冒險\n與珍貴的回憶！\n生日快樂！🎂",
-    },
-    {
-      emoji: "⭐",
-      msg: "願你所有的夢想\n在這一年一一實現！\n你是最特別的那個人！✨",
-    },
-    {
       emoji: "🌸",
-      msg: "不用一直很厲害，\n做自己就很好了。\n生日快樂 ✨",
+      msg: "希望今年比去年轻松一点。\n少一些压力，多一些喘息的空间。",
     },
     {
-      emoji: "🎊",
-      msg: "數數你的幸福，\n而不是蠟燭的數量！\n願接下來的每一天都精彩！🥂",
+      emoji: "☀️",
+      msg: "愿你好日子多过坏日子。\n遇到不顺的时候，希望它快快过去。",
     },
     {
-      emoji: "💫",
-      msg: "你每天都照亮\n身邊所有人的世界！\n生日快樂，閃亮的你！🌟",
+      emoji: "💌",
+      msg: "希望你今天感觉到被重视。\n你值得被好好对待。",
     },
     {
-      emoji: "🎁",
-      msg: "又長一歲了，\n但還活得不錯，算贏 😌",
+      emoji: "🍃",
+      msg: "记得照顾自己。\n不是等到撑不住了才开始，是平时就要。",
     },
-    { emoji: "💰", msg: "願你今年不只快樂，\n也順便小小暴富一下 😏" },
+    {
+      emoji: "✨",
+      msg: "希望今年有什么好事让你惊喜。\n那种没有预期到的那种。",
+    },
+    {
+      emoji: "🎯",
+      msg: "不管你在努力什么，\n希望今年开始慢慢有感觉了。",
+    },
+    {
+      emoji: "💛",
+      msg: "希望身边的人让你生活更轻松。\n如果没有，希望你找到对的人。",
+    },
+    {
+      emoji: "🌙",
+      msg: "多睡一点，多喝水。\n很小的事，但真的很重要。",
+    },
   ],
 };
-
 function getNextBlessingIndex() {
   var pool = giftBlessings[lang];
   if (usedBlessingIndices.length >= pool.length) usedBlessingIndices = [];
@@ -647,8 +783,15 @@ function enableGiftClicks() {
       g._giftClickEnabled = true;
       g.addEventListener("click", function (e) {
         if (!candleBlown) return;
+        if (g._opening) return; // debounce during animation
         e.stopPropagation();
-        openGiftPopup();
+        g._opening = true;
+        g.classList.add("opening");
+        setTimeout(function () {
+          g.classList.remove("opening");
+          g._opening = false;
+          openGiftPopup();
+        }, 420);
       });
     }
   });
@@ -659,25 +802,30 @@ var cakeBites = {
   en: [
     {
       emoji: "🍰",
-      msg: "Mmm! A slice of pure joy!\nEvery bite as sweet as you! 💕",
+      msg: "One slice in.\nHope the rest of the year is just as sweet.",
     },
     {
       emoji: "😋",
-      msg: "Delicious! Just like this\namazing year ahead of you! ✨",
+      msg: "Good cake, good company, good year.\nThat's the plan.",
     },
-    { emoji: "🎂", msg: "The best bite goes to\nthe birthday star! 🌟" },
-    { emoji: "🍓", msg: "Sweet cake for a sweet soul!\nHappy Birthday! 💖" },
-    { emoji: "🥄", msg: "One bite closer to\nall your birthday wishes! 🎉" },
+    {
+      emoji: "🎂",
+      msg: "Birthday cake hits different\nwhen it's actually your birthday.",
+    },
+    { emoji: "🍓", msg: "Enjoy every bite.\nYou earned this." },
+    {
+      emoji: "🥄",
+      msg: "Here's to you.\nAnd to more cake whenever you want it.",
+    },
   ],
   zh: [
-    { emoji: "🍰", msg: "好吃！每一口都甜蜜蜜！\n就像你這個人一樣可愛！💕" },
-    { emoji: "😋", msg: "太美味了！\n就像你接下來的精彩一年！✨" },
-    { emoji: "🎂", msg: "最好的那塊蛋糕\n當然留給生日主角！🌟" },
-    { emoji: "🍓", msg: "甜蜜的蛋糕獻給甜蜜的你！\n生日快樂！💖" },
-    { emoji: "🥄", msg: "再一口，願望就實現了！🎉" },
+    { emoji: "🍰", msg: "吃下第一口了。\n希望今年剩下的日子也这么甜。" },
+    { emoji: "😋", msg: "好吃的蛋糕，好的陪伴，好的一年。\n就这样。" },
+    { emoji: "🎂", msg: "生日蛋糕在生日这天吃\n就是特别好吃。" },
+    { emoji: "🍓", msg: "好好享受每一口。\n你值得。" },
+    { emoji: "🥄", msg: "敬你。\n还有以后想吃蛋糕随时都能吃。" },
   ],
 };
-
 function getNextCakeBiteIndex() {
   var pool = cakeBites[lang];
   if (usedCakeBiteIndices.length >= pool.length) usedCakeBiteIndices = [];
@@ -797,4 +945,37 @@ window.addEventListener("resize", function () {
   _resizeTimer = setTimeout(restructureForMobile, 120);
 });
 
-setLang("en");
+// ── URL PARAMS (?name=xxx&lang=zh) ──
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var pName = params.get("name");
+  var pLang = params.get("lang");
+  if (pName) {
+    personName = decodeURIComponent(pName).slice(0, 20);
+    var inp = document.getElementById("name-input");
+    if (inp) inp.value = personName;
+  }
+  if (pLang === "zh" || pLang === "en") lang = pLang;
+})();
+
+setLang(lang);
+
+// ── PRE-REQUEST MIC on page load ──
+// Ask for permission early so there's no delay when the blow page appears.
+// Store the stream; _setupBlowInteraction will reuse it directly.
+var _micStream = null,
+  _micAnimFrame = null,
+  _micPending = false;
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  _micPending = true;
+  navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then(function (stream) {
+      _micStream = stream;
+      _micPending = false;
+    })
+    .catch(function () {
+      _micStream = null;
+      _micPending = false;
+    });
+}
