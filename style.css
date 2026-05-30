@@ -50,50 +50,337 @@ body {
   pointer-events: none;
 }
 
+/* ─── COUNTDOWN ─── */
+#page-count {
+  /* 💡 核心修正：徹底拔除原本的粉紅色背景！換成神祕高級的深紫到夜幕藍漸層 */
+  background: linear-gradient(
+    135deg,
+    #0d0722 0%,
+    /* 極深星空紫 */ #170e30 45%,
+    /* 飽滿的暗紫羅蘭 */ #0f2340 80%,
+    /* 深沉夜幕藍 */ #060a12 100% /* 接近黑色的深邃冷藍 */
+  );
+  background-size: 200% 200%;
+  overflow: hidden;
+  /* 讓這個新背景自己產生緩慢平滑的極光流動感，打破單調 */
+  animation: countBgFlow 8s ease infinite alternate;
+}
+
+@keyframes countBgFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 💡 光暈圓圈全面換血：改成夢幻的薰衣草紫與亮麗極光藍，徹底消除粉紅斷層 */
+.count-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(85px); /* 高度模糊，讓色彩變成夢幻星雲 */
+  opacity: 0.45;
+  mix-blend-mode: screen; /* 讓冷色調重疊時產生發光的極光效果 */
+  animation: countOrbFloat var(--od, 7s) var(--odl, 0s) ease-in-out infinite
+    alternate;
+}
+
+/* 左上角：夢幻薰衣草紫 */
+.count-orb:nth-child(1) {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+  top: -120px;
+  left: -80px;
+  --od: 6s;
+  --odl: 0s;
+}
+
+/* 右下角：亮麗極光藍 */
+.count-orb:nth-child(2) {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #4cc9f0 0%, transparent 70%);
+  bottom: -100px;
+  right: -60px;
+  --od: 8s;
+  --odl: -1s;
+}
+
+/* 中央偏上：冰晶靛藍 (提亮倒數數字後方) */
+.count-orb:nth-child(3) {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%);
+  top: 20%;
+  left: 50%;
+  --od: 7s;
+  --odl: -2s;
+}
+
+/* 背景光暈的溫柔漂浮動態 */
+@keyframes countOrbFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25px, -30px) scale(1.08);
+  }
+  100% {
+    transform: translate(-15px, 20px) scale(0.95);
+  }
+}
+
+/* 💡 修正同心圓脈衝：把原本帶有粉紅色的擴散圈圈，全部換成淡淡的極光藍 */
+.count-ring {
+  position: absolute;
+  border: 2px solid rgba(76, 201, 240, 0.18) !important; /* 換成藍色半透明邊框 */
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.6);
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(76, 201, 240, 0.04) 0%,
+    transparent 70%
+  ) !important;
+}
+
+/* 💡 光暈優化：完全使用極光藍、薰衣草紫與冰藍色，消除粉紅斷層 */
+.count-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(85px); /* 高度模糊，讓色彩變成夢幻星雲 */
+  opacity: 0.55;
+  mix-blend-mode: screen; /* 讓冷色調重疊時產生發光的極光效果 */
+  animation: countOrbFloat var(--od, 7s) var(--odl, 0s) ease-in-out infinite
+    alternate;
+}
+
+/* 左上角：夢幻薰衣草紫 */
+.count-orb:nth-child(1) {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, #a855f7 0%, transparent 70%);
+  top: -120px;
+  left: -80px;
+  --od: 6s;
+  --odl: 0s;
+}
+
+/* 右下角：亮麗極光藍 (延用你原本的 --blue 變數色調) */
+.count-orb:nth-child(2) {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, #4cc9f0 0%, transparent 70%);
+  bottom: -100px;
+  right: -60px;
+  --od: 8s;
+  --odl: -1s;
+}
+
+/* 中央偏上：冰晶藍 (提亮數字後方) */
+.count-orb:nth-child(3) {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%); /* 靛藍色 */
+  top: 20%;
+  left: 50%;
+  --od: 7s;
+  --odl: -2s;
+}
+
+/* 背景光暈漂浮動態 */
+@keyframes countOrbFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(20px, -30px) scale(1.1);
+  }
+  100% {
+    transform: translate(-15px, 15px) scale(0.95);
+  }
+}
+
 /* ─── START ─── */
 #page-start {
   background: linear-gradient(
-    135deg,
-    #ffe0ec 0%,
-    #ffd6e8 30%,
-    #ffe9b5 70%,
-    #fff3d0 100%
+    145deg,
+    #ffd6e8 0%,
+    #ffbfd4 20%,
+    #ffd9a0 50%,
+    #ffecd2 75%,
+    #ffd6f0 100%
   );
+  background-size: 300% 300%;
+  animation: startBgShift 12s ease infinite;
 }
-#page-start::before {
+@keyframes startBgShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* Floating bubble decorations */
+#page-start::before,
+#page-start::after {
   content: "";
   position: absolute;
-  inset: 0;
+  border-radius: 50%;
   pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse at 20% 80%,
-      rgba(76, 201, 240, 0.2) 0%,
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse at 80% 20%,
-      rgba(255, 225, 93, 0.28) 0%,
-      transparent 55%
-    );
 }
+#page-start::before {
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 182, 193, 0.55) 0%,
+    transparent 70%
+  );
+  top: -80px;
+  left: -80px;
+  animation: bubbleDrift 7s ease-in-out infinite alternate;
+}
+#page-start::after {
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 220, 120, 0.45) 0%,
+    transparent 70%
+  );
+  bottom: -60px;
+  right: -60px;
+  animation: bubbleDrift 9s ease-in-out infinite alternate-reverse;
+}
+@keyframes bubbleDrift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(30px, 20px) scale(1.12);
+  }
+}
+
+/* Extra floating orbs on start page */
+.start-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(50px);
+  animation: bubbleDrift var(--sd, 8s) var(--sdl, 0s) ease-in-out infinite
+    alternate;
+}
+.start-orb-1 {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 150, 200, 0.4);
+  top: 15%;
+  right: 5%;
+  --sd: 6s;
+  --sdl: 0.5s;
+}
+.start-orb-2 {
+  width: 160px;
+  height: 160px;
+  background: rgba(255, 220, 80, 0.35);
+  bottom: 20%;
+  left: 5%;
+  --sd: 8s;
+  --sdl: 1.2s;
+}
+.start-orb-3 {
+  width: 120px;
+  height: 120px;
+  background: rgba(180, 220, 255, 0.3);
+  top: 55%;
+  right: 15%;
+  --sd: 7s;
+  --sdl: 0s;
+}
+
 .start-card {
   position: relative;
   z-index: 2;
-  background: rgba(255, 249, 242, 0.88);
-  backdrop-filter: blur(20px);
-  border-radius: 28px;
-  padding: 42px 46px 38px;
-  box-shadow: 0 8px 60px rgba(200, 60, 120, 0.18);
+  background: rgba(255, 252, 248, 0.82);
+  backdrop-filter: blur(24px);
+  border-radius: 32px;
+  padding: 36px 42px 38px;
+  box-shadow:
+    0 8px 40px rgba(220, 80, 130, 0.18),
+    0 2px 0px rgba(255, 255, 255, 0.9) inset;
   text-align: center;
-  max-width: 420px;
-  width: 90vw;
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  max-width: 400px;
+  width: 88vw;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  margin-top: 0;
+  background-clip: padding-box;
 }
+.start-card::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 34px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 182, 193, 0.7),
+    rgba(255, 220, 120, 0.5),
+    rgba(255, 160, 200, 0.6),
+    rgba(255, 240, 160, 0.5)
+  );
+  z-index: -1;
+  animation: cardBorderShift 6s ease infinite;
+  background-size: 300% 300%;
+}
+@keyframes cardBorderShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+/* Background floating emoji decorations */
+.bg-deco {
+  position: absolute;
+  font-size: var(--sz, 22px);
+  opacity: 0.45;
+  pointer-events: none;
+  animation: bgDecoFloat var(--sd, 6s) var(--sdl, 0s) ease-in-out infinite
+    alternate;
+  z-index: 1;
+  user-select: none;
+}
+@keyframes bgDecoFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) rotate(12deg) scale(1.08);
+  }
+  100% {
+    transform: translateY(4px) rotate(-6deg) scale(0.95);
+  }
+}
+
 .s-emoji-cluster {
   position: relative;
-  height: 74px;
-  margin-bottom: 8px;
+  height: 80px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -104,7 +391,7 @@ body {
   animation: seFloat 3s ease-in-out infinite;
 }
 .se1 {
-  font-size: 52px;
+  font-size: 54px;
   top: 6px;
 }
 .se2 {
@@ -114,7 +401,7 @@ body {
   top: 0;
 }
 .se3 {
-  font-size: 26px;
+  font-size: 28px;
   right: 12%;
   animation-delay: 0.8s;
   top: 4px;
@@ -123,13 +410,13 @@ body {
   font-size: 20px;
   left: 22%;
   animation-delay: 1.2s;
-  top: 38px;
+  top: 40px;
 }
 .se5 {
-  font-size: 22px;
+  font-size: 24px;
   right: 22%;
   animation-delay: 0.6s;
-  top: 36px;
+  top: 38px;
 }
 @keyframes seFloat {
   0%,
@@ -140,9 +427,10 @@ body {
     transform: translateY(-7px) rotate(8deg);
   }
 }
+
 .s-invite {
   font-family: "Dancing Script", cursive;
-  font-size: clamp(18px, 4vw, 24px);
+  font-size: clamp(22px, 5vw, 30px);
   color: var(--dpink);
   margin-bottom: 22px;
   opacity: 0.9;
@@ -221,47 +509,49 @@ body {
 /* ─── COUNTDOWN ─── */
 #page-count {
   background: linear-gradient(
-    150deg,
-    #ff85a1 0%,
-    #ff5c8a 40%,
-    #e0558a 75%,
-    #ffb347 100%
+    135deg,
+    #ffb6c8 0%,
+    #ff85a1 25%,
+    #ffcc70 60%,
+    #ffa07a 100%
   );
+  background-size: 300% 300%;
+  animation: startBgShift 10s ease infinite;
   overflow: hidden;
 }
 .count-orb {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(60px);
-  opacity: 0.45;
+  filter: blur(70px);
+  opacity: 0.5;
   animation: orbDrift var(--od, 5s) var(--odl, 0s) ease-in-out infinite
     alternate;
 }
 .count-orb:nth-child(1) {
-  width: 380px;
-  height: 380px;
-  background: #ffe0ec;
-  top: -120px;
-  left: -100px;
+  width: 420px;
+  height: 420px;
+  background: rgba(255, 220, 180, 0.7);
+  top: -140px;
+  left: -120px;
   --od: 4s;
   --odl: 0s;
 }
 .count-orb:nth-child(2) {
-  width: 300px;
-  height: 300px;
-  background: #ffe9b5;
-  bottom: -90px;
-  right: -70px;
+  width: 320px;
+  height: 320px;
+  background: rgba(255, 180, 210, 0.65);
+  bottom: -100px;
+  right: -80px;
   --od: 5s;
   --odl: 0.7s;
 }
 .count-orb:nth-child(3) {
-  width: 240px;
-  height: 240px;
-  background: #fff3d0;
-  top: 35%;
-  left: 58%;
+  width: 260px;
+  height: 260px;
+  background: rgba(255, 240, 150, 0.5);
+  top: 38%;
+  left: 52%;
   --od: 4.5s;
   --odl: 0.4s;
 }
@@ -270,13 +560,13 @@ body {
     transform: translate(0, 0) scale(1);
   }
   to {
-    transform: translate(22px, 18px) scale(1.08);
+    transform: translate(24px, 20px) scale(1.1);
   }
 }
 .count-ring {
   position: absolute;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
   animation: ringPulse 2.4s ease-in-out infinite;
 }
 .count-ring:nth-child(4) {
@@ -340,11 +630,11 @@ body {
   font-family: "Pacifico", cursive;
   font-size: clamp(140px, 32vw, 240px);
   font-weight: 400;
-  color: #fff;
+  color: #ffffff;
   text-shadow:
-    0 0 60px rgba(255, 255, 255, 0.5),
-    0 6px 0 rgba(180, 20, 70, 0.3),
-    0 12px 40px rgba(150, 0, 50, 0.35);
+    0 0 30px rgba(255, 255, 255, 0.9),
+    0 0 60px rgba(255, 160, 100, 0.5),
+    0 4px 16px rgba(200, 60, 80, 0.25);
   animation: cPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   line-height: 1;
 }
@@ -372,15 +662,42 @@ body {
   animation: fadeUp 0.4s 0.15s ease-out forwards;
 }
 
-/* ─── CELEBRATION ─── */
+@media (max-height: 700px) {
+  .start-card {
+    padding-top: 28px;
+    padding-bottom: 24px;
+  }
+  .s-emoji-cluster {
+    height: 56px;
+    margin-bottom: 4px;
+  }
+  .se1 {
+    font-size: 40px;
+  }
+  .s-invite {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  .name-row {
+    margin-bottom: 14px;
+  }
+}
 #page-celeb {
-  background: linear-gradient(
-    160deg,
-    #ffe8f0 0%,
-    #ffdde9 35%,
-    #fff5c0 75%,
-    #e8f8ff 100%
-  );
+  background: linear-gradient(-45deg, #ffe8f0, #ffdde9, #fff5c0, #e8f8ff);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 #page-celeb::before {
   content: "";
@@ -464,6 +781,81 @@ body {
   gap: 0;
 }
 
+/* 修改你原本的 .count-orb 樣式，加入動畫 */
+.count-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  /* 加上漂浮與呼吸動畫 */
+  animation: countOrbMotion 6s ease-in-out infinite alternate;
+}
+
+/* 讓三個圓圈的動畫速度和方向錯開，看起來更自然 */
+.count-orb:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #ff85a1 0%, transparent 70%);
+  top: 20%;
+  left: 15%;
+  animation-duration: 5s;
+}
+.count-orb:nth-child(2) {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #ffe15d 0%, transparent 70%);
+  bottom: 15%;
+  right: 10%;
+  animation-duration: 7s;
+  animation-delay: -1s;
+}
+.count-orb:nth-child(3) {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, #4cc9f0 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  animation-duration: 6s;
+  animation-delay: -2s;
+}
+
+/* 新增倒數圓圈的漂浮與呼吸特效 */
+@keyframes countOrbMotion {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(20px, -30px) scale(1.15); /* 稍微位移並放大 */
+  }
+  100% {
+    transform: translate(-10px, 15px) scale(0.95);
+  }
+}
+
+/* 讓數字切換時有心跳、彈出的動態感 */
+.pulse-scale {
+  animation: countPulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes countPulse {
+  0% {
+    opacity: 0;
+    transform: scale(2.5); /* 從超大、透明開始 */
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(0px);
+  }
+  70% {
+    transform: scale(0.9); /* 稍微縮得比原本小一點點 */
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1); /* 回到正常大小 */
+  }
+}
+
 /* HB Title */
 .hb-block {
   text-align: center;
@@ -503,31 +895,34 @@ body {
   padding: 6px 0 4px;
 }
 html[lang="zh"] .hb-main {
-  font-family: "Noto Serif TC", serif;
-  font-weight: 900;
-  letter-spacing: 4px;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-weight: 400;
+  font-size: clamp(38px, 7.5vw, 76px);
+  letter-spacing: 6px;
 }
 html[lang="zh"] .hb-tagline {
-  font-family: "Noto Serif TC", serif;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-weight: 400;
+  letter-spacing: 3px;
 }
 html[lang="zh"] .s-invite {
-  font-family: "Noto Serif TC", serif;
-  font-weight: 700;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-weight: 400;
+  font-size: clamp(22px, 5vw, 30px);
 }
 html[lang="zh"] .start-btn,
 html[lang="zh"] .lang-btn,
 html[lang="zh"] #name-input {
-  font-family: "Noto Serif TC", serif;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
 }
 html[lang="zh"] .count-label {
-  font-family: "Noto Serif TC", serif;
-  letter-spacing: 3px;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-weight: 400;
+  letter-spacing: 4px;
 }
 html[lang="zh"] .final-msg {
-  font-family: "Noto Serif TC", serif;
-  font-weight: 700;
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-weight: 400;
 }
 .hb-tagline {
   display: block;
@@ -1155,6 +1550,137 @@ html[lang="zh"] .final-msg {
   }
 }
 
+/* Mic blow hint */
+#mic-hint {
+  font-family: "Nunito", sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  margin-top: 6px;
+  min-height: 20px;
+}
+.blow-meter-wrap {
+  width: 140px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  margin: 6px auto 0;
+  overflow: hidden;
+}
+.blow-meter-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #ffe15d, #ff85a1);
+  border-radius: 999px;
+  transition: width 0.1s linear;
+}
+
+/* Watermark */
+#watermark {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  font-family: "Nunito", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 999;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* iOS audio hint */
+#audio-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  padding: 9px 22px;
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  z-index: 200;
+  white-space: nowrap;
+  animation: hintPulse 2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes hintPulse {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+/* Gift open animation */
+.gift-wrap {
+  opacity: 0;
+  position: relative;
+}
+.gift-lid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  pointer-events: none;
+  transform-origin: center bottom;
+  transition: none;
+  z-index: 10;
+}
+.gift-wrap.opening .gift-lid {
+  animation: lidPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+@keyframes lidPop {
+  0% {
+    transform: rotate(0deg) translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: rotate(-35deg) translateY(-18px) scale(1.05);
+    opacity: 1;
+  }
+  70% {
+    transform: rotate(-28deg) translateY(-22px);
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(-40deg) translateY(-30px) scale(0.9);
+    opacity: 0;
+  }
+}
+.gift-wrap.opening {
+  animation: giftShake 0.45s ease-in-out;
+}
+@keyframes giftShake {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-5deg) scale(1.06);
+  }
+  40% {
+    transform: rotate(5deg) scale(1.08);
+  }
+  60% {
+    transform: rotate(-3deg) scale(1.06);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+}
+
 /* Gift cursor — only active after candle blown */
 .gifts-active .gift-wrap {
   cursor: pointer;
@@ -1202,8 +1728,8 @@ html[lang="zh"] .final-msg {
   box-shadow: 0 12px 60px rgba(200, 60, 120, 0.28);
   border: 2px solid rgba(255, 133, 161, 0.45);
   text-align: center;
-  max-width: 380px;
-  width: 86vw;
+  max-width: 420px;
+  width: 90vw;
   animation: popIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
 }
@@ -1232,13 +1758,22 @@ html[lang="zh"] .final-msg {
   }
 }
 #gift-popup-msg {
-  font-family: "Noto Serif TC", "Dancing Script", "Pacifico", cursive;
+  font-family: "Dancing Script", "Pacifico", cursive;
   font-size: clamp(17px, 4vw, 22px);
   color: #c0246a;
   font-weight: 700;
   line-height: 1.7;
   margin-bottom: 24px;
   letter-spacing: 0.02em;
+}
+html[lang="zh"] #gift-popup-msg {
+  font-family: "ZCOOL KuaiLe", "Noto Serif TC", serif;
+  font-size: clamp(16px, 3.8vw, 20px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+  word-break: break-all;
 }
 #gift-popup-close {
   padding: 10px 32px;
@@ -1255,4 +1790,13 @@ html[lang="zh"] .final-msg {
 }
 #gift-popup-close:hover {
   transform: scale(1.07) translateY(-2px);
+}
+
+/* 💡 新增這段，拯救溢出的圖片 */
+.pic-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 自動裁切填滿，不會壓縮變形 */
+  border-radius: 12px; /* 配合你原本外框的圓角 */
+  display: block;
 }
