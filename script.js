@@ -392,17 +392,15 @@ function runCountdown() {
     count--;
     if (count === 0) {
       clearInterval(tick);
-      // 倒數到 0 時，完全不塞入任何文字，直接照你原本的設定，完美進主畫面！
       setTimeout(launchCelebration, 500);
     } else {
-      // 2 和 1 的切換動畫
       el.className = "count-num";
       el.style.animation = "none";
-      void el.offsetWidth; // 強制瀏覽器重繪
+      void el.offsetWidth;
       el.style.animation = "";
       el.textContent = count;
     }
-  }, 900); // 維持你原本舒適的 900ms 節奏
+  }, 900);
 }
 
 function launchCelebration() {
@@ -455,14 +453,15 @@ function launchCelebration() {
   var fi = fw.querySelector(".flame-inner");
   if (fi) fi.style.opacity = "";
 
-  animateCakeTiers();
+  restructureForMobile();
+  setTimeout(animateCakeTiers, 60);
   setTimeout(function () {
     candle.style.animation = "candleIn .4s ease-out forwards";
   }, 1350);
   setTimeout(function () {
     fw.style.animation = "flameIn .3s ease-out forwards";
     if (fl) fl.style.animation = "flicker 1.2s infinite";
-    // Gifts appear 600ms after candle is lit
+
     setTimeout(function () {
       document.querySelectorAll(".gift-wrap").forEach(function (g) {
         g.classList.add("g-show");
@@ -480,9 +479,6 @@ function launchCelebration() {
     e.remove();
   });
   spawnBalloons();
-  // Re-apply mobile layout after celebration resets DOM
-  setTimeout(restructureForMobile, 50);
-
   musicStopped = false;
   playing = false;
   audioInitialized = false;
@@ -566,7 +562,6 @@ function _setupBlowInteraction() {
   var btn = document.getElementById("blow-btn");
 
   if (_micStream) {
-    // Already have permission — use immediately
     _startBlowAnalyser(_micStream, hint, btn);
   } else if (_micPending) {
     // Still waiting for user to grant — poll briefly then start
@@ -581,7 +576,6 @@ function _setupBlowInteraction() {
       }
     }, 150);
   } else {
-    // Mic denied or unavailable
     _useBtnFallback(hint, btn);
   }
 }
@@ -879,23 +873,19 @@ function restructureForMobile() {
     var g7 = sceneRow.querySelector(".g7");
     var g8 = sceneRow.querySelector(".g8");
 
-    // Clear scene-row
     while (sceneRow.firstChild) sceneRow.removeChild(sceneRow.firstChild);
 
-    // Row 1: left gifts (g5,g6,g1,g2 — or g1,g2,g5,g6 sized nicely)
     var row1 = document.createElement("div");
     row1.className = "mobile-gift-row";
     [g6, g5, g1, g2].forEach(function (g) {
       if (g) row1.appendChild(g);
     });
 
-    // Row 2: cake
     var row2 = document.createElement("div");
     row2.className = "mobile-gift-row";
     row2.style.justifyContent = "center";
     if (cakeWrap) row2.appendChild(cakeWrap);
 
-    // Row 3: right gifts (g3,g4,g7,g8)
     var row3 = document.createElement("div");
     row3.className = "mobile-gift-row";
     [g3, g4, g7, g8].forEach(function (g) {
@@ -906,10 +896,8 @@ function restructureForMobile() {
     sceneRow.appendChild(row2);
     sceneRow.appendChild(row3);
   } else {
-    // Desktop: restore flat layout
     var allGifts = sceneRow.querySelectorAll(".gift-wrap");
     if (allGifts.length === 0) {
-      // Gifts may be inside .mobile-gift-row — restore
       var rows = sceneRow.querySelectorAll(".mobile-gift-row");
       var giftsArr = [];
       rows.forEach(function (r) {
@@ -921,7 +909,6 @@ function restructureForMobile() {
       rows.forEach(function (r) {
         r.remove();
       });
-      // Re-append: left gifts (order -1), cake (order 0), right gifts (order 1)
       ["g1", "g2", "g5", "g6"].forEach(function (cls) {
         giftsArr.forEach(function (g) {
           if (g.classList.contains(cls)) sceneRow.appendChild(g);
@@ -962,7 +949,7 @@ setLang(lang);
 
 // ── PRE-REQUEST MIC on page load ──
 // Ask for permission early so there's no delay when the blow page appears.
-// Store the stream; _setupBlowInteraction will reuse it directly.
+
 var _micStream = null,
   _micAnimFrame = null,
   _micPending = false;
