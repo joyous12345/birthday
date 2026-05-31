@@ -52,7 +52,6 @@ body {
 
 /* ─── COUNTDOWN ─── */
 #page-count {
-  /* 💡 核心修正：徹底拔除原本的粉紅色背景！換成神祕高級的深紫到夜幕藍漸層 */
   background: linear-gradient(
     135deg,
     #0d0722 0%,
@@ -75,14 +74,13 @@ body {
   }
 }
 
-/* 💡 光暈圓圈全面換血：改成夢幻的薰衣草紫與亮麗極光藍，徹底消除粉紅斷層 */
 .count-orb {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(85px); /* 高度模糊，讓色彩變成夢幻星雲 */
+  filter: blur(85px);
   opacity: 0.45;
-  mix-blend-mode: screen; /* 讓冷色調重疊時產生發光的極光效果 */
+  mix-blend-mode: screen;
   animation: countOrbFloat var(--od, 7s) var(--odl, 0s) ease-in-out infinite
     alternate;
 }
@@ -136,7 +134,7 @@ body {
 /* 💡 修正同心圓脈衝：把原本帶有粉紅色的擴散圈圈，全部換成淡淡的極光藍 */
 .count-ring {
   position: absolute;
-  border: 2px solid rgba(76, 201, 240, 0.18) !important; /* 換成藍色半透明邊框 */
+  border: 2px solid rgba(76, 201, 240, 0.18) !important;
   border-radius: 50%;
   top: 50%;
   left: 50%;
@@ -155,9 +153,9 @@ body {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  filter: blur(85px); /* 高度模糊，讓色彩變成夢幻星雲 */
+  filter: blur(85px);
   opacity: 0.55;
-  mix-blend-mode: screen; /* 讓冷色調重疊時產生發光的極光效果 */
+  mix-blend-mode: screen;
   animation: countOrbFloat var(--od, 7s) var(--odl, 0s) ease-in-out infinite
     alternate;
 }
@@ -188,7 +186,7 @@ body {
 .count-orb:nth-child(3) {
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, #6366f1 0%, transparent 70%); /* 靛藍色 */
+  background: radial-gradient(circle, #6366f1 0%, transparent 70%);
   top: 20%;
   left: 50%;
   --od: 7s;
@@ -781,18 +779,15 @@ body {
   gap: 0;
 }
 
-/* 修改你原本的 .count-orb 樣式，加入動畫 */
 .count-orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(60px);
   opacity: 0.5;
   mix-blend-mode: multiply;
-  /* 加上漂浮與呼吸動畫 */
   animation: countOrbMotion 6s ease-in-out infinite alternate;
 }
 
-/* 讓三個圓圈的動畫速度和方向錯開，看起來更自然 */
 .count-orb:nth-child(1) {
   width: 300px;
   height: 300px;
@@ -820,20 +815,18 @@ body {
   animation-delay: -2s;
 }
 
-/* 新增倒數圓圈的漂浮與呼吸特效 */
 @keyframes countOrbMotion {
   0% {
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(20px, -30px) scale(1.15); /* 稍微位移並放大 */
+    transform: translate(20px, -30px) scale(1.15);
   }
   100% {
     transform: translate(-10px, 15px) scale(0.95);
   }
 }
 
-/* 讓數字切換時有心跳、彈出的動態感 */
 .pulse-scale {
   animation: countPulse 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
@@ -841,18 +834,18 @@ body {
 @keyframes countPulse {
   0% {
     opacity: 0;
-    transform: scale(2.5); /* 從超大、透明開始 */
+    transform: scale(2.5);
     filter: blur(10px);
   }
   50% {
     filter: blur(0px);
   }
   70% {
-    transform: scale(0.9); /* 稍微縮得比原本小一點點 */
+    transform: scale(0.9);
   }
   100% {
     opacity: 1;
-    transform: scale(1); /* 回到正常大小 */
+    transform: scale(1);
   }
 }
 
@@ -1792,11 +1785,10 @@ html[lang="zh"] #gift-popup-msg {
   transform: scale(1.07) translateY(-2px);
 }
 
-/* 💡 新增這段，拯救溢出的圖片 */
 .pic-wrapper img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* 自動裁切填滿，不會壓縮變形 */
-  border-radius: 12px; /* 配合你原本外框的圓角 */
+  object-fit: cover;
+  border-radius: 12px;
   display: block;
 }
